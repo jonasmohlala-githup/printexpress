@@ -2,30 +2,30 @@
   "version": 2,
   "builds": [
     {
-      "src": "website/**",
+      "src": "*.html",
       "use": "@vercel/static"
     },
     {
-      "src": "api/**/*.js",
+      "src": "Assets/**",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "api/enquiry.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
-      "src": "/generate-image",
-      "dest": "/api/generate-image.js"
+      "src": "/enquiry",
+      "dest": "/api/enquiry.js"
     },
     {
-      "src": "/lead",
-      "dest": "/api/lead.js"
+      "src": "/Assets/(.*)",
+      "dest": "/Assets/$1"
     },
     {
       "src": "/",
-      "dest": "/website/design1.html"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/website/$1"
+      "dest": "/print express.html"
     }
   ]
 }
