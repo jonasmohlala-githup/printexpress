@@ -11,7 +11,7 @@ module.exports = async (req, res) => {
     return res.status(400).json({ error: 'Name, email and message are required' });
   }
 
-  const RESEND_API_KEY = process.env.PRINTEXPRESS_RESEND_API_KEY;
+  const RESEND_API_KEY = process.env.RESEND_API_KEY;
   if (!RESEND_API_KEY) {
     return res.status(500).json({ error: 'Email service not configured' });
   }
