@@ -16,8 +16,8 @@ module.exports = async (req, res) => {
     return res.status(500).json({ error: 'Email service not configured' });
   }
 
-  const sendEmail = (to, subject, html) =>
-    fetch('https://api.resend.com/emails', {
+  const sendEmail = async (to, subject, html) => {
+    const r = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${RESEND_API_KEY}`,
@@ -30,6 +30,12 @@ module.exports = async (req, res) => {
         html,
       }),
     });
+    if (!r.ok) {
+      const body = await r.text();
+      throw new Error(`Resend error ${r.status}: ${body}`);
+    }
+    return r.json();
+  };
 
   try {
     await sendEmail(
@@ -47,25 +53,33 @@ module.exports = async (req, res) => {
       `
     );
 
-    await sendEmail(
-      email,
-      `Thanks for your enquiry, ${name}!`,
-      `
-        <div style="font-family:Inter,sans-serif;max-width:560px;margin:0 auto;padding:32px">
-          <h2 style="color:#E11D2E">We've received your enquiry!</h2>
-          <p>Hi ${name},</p>
-          <p>Thank you for contacting <strong>Print Express</strong>. We've received your message and will get back to you as soon as possible.</p>
-          <p><strong>Your enquiry:</strong></p>
-          <blockquote style="border-left:3px solid #E11D2E;padding-left:12px;color:#444">${message}</blockquote>
-          <p>In the meantime, feel free to reach us on WhatsApp at <strong>060 848 1691</strong>.</p>
-          <p>Kind regards,<br/><strong>The Print Express Team</strong></p>
-        </div>
-      `
-    );
+    // Only send confirmation to customer if they're not already the owner email
+    // onboarding@resend.dev can only send to the account owner's verified email
+    if (email.toLowerCase() !== 'jonas.mohlala@gmail.com') {
+      try {
+        await sendEmail(
+          'jonas.mohlala@gmail.com',
+          `Confirmation copy: enquiry from ${name} (${email})`,
+          `
+            <div style="font-family:Inter,sans-serif;max-width:560px;margin:0 auto;padding:32px">
+              <p style="color:#888;font-size:12px">This is a copy of the auto-reply that could not be sent to ${email} (unverified sender domain). Please reply to them manually.</p>
+              <hr/>
+              <h2 style="color:#E11D2E">Customer confirmation template</h2>
+              <p>Hi ${name},</p>
+              <p>Thank you for contacting <strong>Print Express</strong>. We've received your message and will get back to you as soon as possible.</p>
+              <p><strong>Their enquiry:</strong></p>
+              <blockquote style="border-left:3px solid #E11D2E;padding-left:12px;color:#444">${message}</blockquote>
+            </div>
+          `
+        );
+      } catch (confErr) {
+        console.warn('Confirmation copy failed:', confErr.message);
+      }
+    }
 
     return res.status(200).json({ success: true });
   } catch (err) {
     console.error('Enquiry email error:', err);
-    return res.status(500).json({ error: 'Failed to send email' });
+    return res.status(500).json({ error: err.message });
   }
 };
