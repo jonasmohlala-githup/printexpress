@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Print Express</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'pe-red': '#E11D2E',
+            'pe-dark': '#1a1a1a',
+            'pe-gray': '#f5f5f5'
+          },
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link rel="icon" type="image/svg+xml" href="../Assets/favicon.svg"/>
+<style data-purpose="custom-utilities">
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .hero-bg {
+      background: linear-gradient(to right, #f5f5f5 50%, #d1d1d1 75%, #a0a0a0 100%);
+    }
+    .shadow-card {
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    }
+    * {
+      font-weight: 300 !important;
+    }
+    h1, h2, h3, h4 {
+      font-weight: 400 !important;
+    }
+    .container {
+      width: 100% !important;
+      max-width: 100% !important;
+      padding-left: 1rem !important;
+      padding-right: 1rem !important;
+    }
+    @media (min-width: 768px) {
+      .container {
+        width: 90% !important;
+        max-width: 90% !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+      }
+    }
+    @media (min-width: 1024px) {
+      .container {
+        width: 75% !important;
+        max-width: 75% !important;
+      }
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    #toner-row2 {
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transform: translateY(-24px);
+      transition: max-height 0.9s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    #toner-row2.open {
+      max-height: 600px;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    #mobile-menu {
+      display: none;
+    }
+    #mobile-menu.open {
+      display: block;
+    }
+  </style>
+</head>
+<body class="bg-white text-gray-800 antialiased">
+<!-- BEGIN: TopBar -->
+<div class="bg-pe-dark text-white text-sm py-2">
+<div class="container mx-auto flex justify-between items-center">
+<!-- Address: hidden on mobile -->
+<div class="hidden md:flex items-center space-x-2">
+<svg class="w-4 h-4 text-pe-red" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>6 Cilliers Street, Kimberley, Northern Cape</span>
+</div>
+<div class="flex items-center space-x-4">
+<!-- Hours: hidden on mobile -->
+<div class="hidden md:flex items-center space-x-2">
+<svg class="w-4 h-4 text-pe-red" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Mon - Sat: 9:00 AM - 6:00 PM</span>
+</div>
+<!-- Phone: always visible -->
+<div class="flex items-center space-x-2 font-semibold">
+<svg class="w-4 h-4 text-pe-red" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<a class="hover:text-pe-red transition-colors" href="tel:0608481691">0608481691</a>
+</div>
+<!-- WhatsApp: hidden on mobile (shown in hamburger menu) -->
+<a href="https://wa.me/27608481691" target="_blank" rel="noopener noreferrer" class="hidden md:flex items-center space-x-2 bg-green-600 hover:bg-green-700 transition-colors text-white px-3 py-1 rounded-full text-xs font-semibold">
+<svg class="w-3.5 h-3.5" fill="currentColor" viewbox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+<span>WhatsApp 24/7</span>
+</a>
+</div>
+</div>
+</div>
+<!-- END: TopBar -->
+<!-- BEGIN: MainNavigation -->
+<header class="border-b border-gray-200">
+<div class="container mx-auto py-4 flex justify-between items-center">
+<!-- Logo -->
+<a class="flex items-center" href="#home">
+<img alt="Print Express Logo" class="h-10 w-auto" src="../Assets/logo.svg"/>
+</a>
+<!-- Desktop Navigation Links -->
+<nav class="hidden md:flex space-x-8 font-semibold text-gray-700">
+<a class="text-pe-red border-b-2 border-pe-red pb-1" href="#home">HOME</a>
+<a class="hover:text-pe-red transition-colors" href="#inks">INK CARTRIDGES</a>
+<a class="hover:text-pe-red transition-colors" href="#toners">TONER CARTRIDGES</a>
+<a class="hover:text-pe-red transition-colors" href="#toners">PRINTERS</a>
+<a class="hover:text-pe-red transition-colors" href="#about">ABOUT US</a>
+<a class="hover:text-pe-red transition-colors" href="#enquiry">CONTACT</a>
+</nav>
+<!-- Mobile Hamburger Button -->
+<button class="md:hidden flex flex-col justify-center items-center w-8 h-8 space-y-1.5" aria-label="Toggle menu" onclick="const m=document.getElementById('mobile-menu');m.classList.toggle('open')">
+<span class="block w-6 h-0.5 bg-gray-700"></span>
+<span class="block w-6 h-0.5 bg-gray-700"></span>
+<span class="block w-6 h-0.5 bg-gray-700"></span>
+</button>
+</div>
+<!-- Mobile Menu -->
+<div id="mobile-menu" class="md:hidden bg-white border-t border-gray-200 px-4 py-4">
+<nav class="flex flex-col space-y-4 font-semibold text-gray-700">
+<a class="text-pe-red" href="#home" onclick="document.getElementById('mobile-menu').classList.remove('open')">HOME</a>
+<a class="hover:text-pe-red transition-colors" href="#inks" onclick="document.getElementById('mobile-menu').classList.remove('open')">INK CARTRIDGES</a>
+<a class="hover:text-pe-red transition-colors" href="#toners" onclick="document.getElementById('mobile-menu').classList.remove('open')">TONER CARTRIDGES</a>
+<a class="hover:text-pe-red transition-colors" href="#toners" onclick="document.getElementById('mobile-menu').classList.remove('open')">PRINTERS</a>
+<a class="hover:text-pe-red transition-colors" href="#about" onclick="document.getElementById('mobile-menu').classList.remove('open')">ABOUT US</a>
+<a class="hover:text-pe-red transition-colors" href="#enquiry" onclick="document.getElementById('mobile-menu').classList.remove('open')">CONTACT</a>
+<a href="https://wa.me/27608481691" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-full text-sm font-semibold w-fit">
+<svg class="w-4 h-4" fill="currentColor" viewbox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+<span>WhatsApp 24/7</span>
+</a>
+</nav>
+</div>
+</header>
+<!-- END: MainNavigation -->
+<!-- BEGIN: HeroSection -->
+<section class="hero-bg py-10 md:py-20 relative" id="home">
+<div class="container mx-auto relative z-10">
+<div class="max-w-xl">
+<p class="text-pe-red font-bold text-sm tracking-wider uppercase mb-2">Local Service. Premium Quality.</p>
+<h1 class="text-3xl md:text-5xl lg:text-6xl font-extrabold text-pe-dark leading-tight mb-2">
+          INK &amp; TONER<br/>
+<span class="text-pe-red">THAT PERFORMS.</span>
+</h1>
+<p class="text-gray-700 text-base md:text-lg mb-6 leading-relaxed">
+          High quality ink and toner cartridges for all
+          major printer brands. Great prints. Great prices.
+          Local support you can count on.
+        </p>
+<div class="grid grid-cols-3 gap-2 mb-6 text-sm font-semibold">
+<div class="flex items-center space-x-1">
+<svg class="w-5 h-5 text-pe-red flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-xs leading-tight text-pe-dark">100% QUALITY<br/>GUARANTEED</span>
+</div>
+<div class="flex items-center space-x-1">
+<svg class="w-5 h-5 text-pe-red flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-xs leading-tight text-pe-dark">LOW PRICES<br/>EVERYDAY</span>
+</div>
+<div class="flex items-center space-x-1">
+<svg class="w-5 h-5 text-pe-red flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-xs leading-tight text-pe-dark">FAST LOCAL<br/>DELIVERY</span>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row gap-3">
+<a class="bg-pe-red text-white px-8 py-3 rounded font-bold hover:bg-red-700 transition-colors text-center" href="#toners">SHOP TONERS</a>
+<a class="border-2 border-pe-red text-pe-red px-8 py-3 rounded font-bold hover:bg-red-50 transition-colors text-center" href="#inks">SHOP INKS</a>
+</div>
+</div>
+</div>
+<!-- Decorative badge -->
+<div class="hidden sm:flex absolute top-10 right-20 bg-yellow-400 rounded-full w-32 h-32 items-center justify-center text-center font-bold text-pe-dark text-sm p-4 shadow-lg transform rotate-12">
+      SUPPORTING<br/>LOCAL<br/>BUSINESS
+    </div>
+</section>
+<!-- END: HeroSection -->
+<!-- BEGIN: FeatureIcons -->
+<section class="bg-gray-50 py-6 border-b border-gray-200">
+<div class="container mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
+<div class="flex items-start space-x-4">
+<svg class="w-8 h-8 text-pe-dark flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<div>
+<h3 class="font-bold text-pe-dark text-sm uppercase">Compatible<br/>With Top Brands</h3>
+<p class="text-gray-600 text-sm mt-1">HP, Canon, Brother,<br/>Epson &amp; more.</p>
+</div>
+</div>
+<div class="flex items-start space-x-4">
+<svg class="w-8 h-8 text-pe-dark flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<div>
+<h3 class="font-bold text-pe-dark text-sm uppercase">Vibrant Prints<br/>Every Time</h3>
+<p class="text-gray-600 text-sm mt-1">Crisp text. Rich colours.<br/>Professional results.</p>
+</div>
+</div>
+<div class="flex items-start space-x-4">
+<svg class="w-8 h-8 text-pe-dark flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<div>
+<h3 class="font-bold text-pe-dark text-sm uppercase">Eco Friendly<br/>Choices</h3>
+<p class="text-gray-600 text-sm mt-1">Recycled options<br/>for a better tomorrow.</p>
+</div>
+</div>
+<div class="flex items-start space-x-4">
+<svg class="w-8 h-8 text-pe-dark flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<div>
+<h3 class="font-bold text-pe-dark text-sm uppercase">Expert Local<br/>Support</h3>
+<p class="text-gray-600 text-sm mt-1">Friendly advice from<br/>people who care.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- END: FeatureIcons -->
+<!-- BEGIN: ProductGrid -->
+<section class="py-8 bg-white" id="toners">
+<div class="container mx-auto">
+<div class="flex justify-between items-end mb-8">
+<div>
+<p class="text-pe-red font-bold text-sm tracking-wide uppercase mb-1">Our Best Selling Toners</p>
+<h2 class="text-3xl font-extrabold text-pe-dark">Top Toners. Trusted Quality.</h2>
+</div>
+<button onclick="const r=document.getElementById('toner-row2');const open=r.classList.toggle('open');this.textContent=open?'SHOW LESS':'VIEW ALL TONERS';" class="bg-pe-red text-white px-6 py-2 rounded font-semibold text-sm hover:bg-red-700 transition-colors">VIEW ALL TONERS</button>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+<!-- Product Card 1 -->
+<div class="bg-white border border-gray-100 rounded-lg p-4 shadow-card hover:shadow-lg transition-shadow">
+<img alt="HP 83A Black Toner" class="w-full h-24 object-contain mb-3" src="../Assets/toner.jpg"/>
+<h3 class="font-bold text-pe-dark mb-1">HP 83A Black Toner</h3>
+<p class="text-gray-500 text-xs mb-2">LaserJet Pro MFP M125 / M127</p>
+<p class="text-pe-red font-bold">CF283A</p>
+</div>
+<!-- Product Card 2 -->
+<div class="bg-white border border-gray-100 rounded-lg p-4 shadow-card hover:shadow-lg transition-shadow">
+<img alt="HP 85A Black Toner" class="w-full h-24 object-contain mb-3" src="../Assets/toner.jpg"/>
+<h3 class="font-bold text-pe-dark mb-1">HP 85A Black Toner</h3>
+<p class="text-gray-500 text-xs mb-2">LaserJet Pro P1102 / P1102w</p>
+<p class="text-pe-red font-bold">CE285A</p>
+</div>
+<!-- Product Card 3 -->
+<div class="bg-white border border-gray-100 rounded-lg p-4 shadow-card hover:shadow-lg transition-shadow">
+<img alt="Brother TN-2420 Toner" class="w-full h-24 object-contain mb-3" src="../Assets/toner.jpg"/>
+<h3 class="font-bold text-pe-dark mb-1">Brother TN-2420 Toner</h3>
+<p class="text-gray-500 text-xs mb-2">HL-L2350DW / L2370DN</p>
+<p class="text-pe-red font-bold">TN2420</p>
+</div>
+<!-- Product Card 4 -->
+<div class="bg-white border border-gray-100 rounded-lg p-4 shadow-card hover:shadow-lg transition-shadow">
+<img alt="Canon 737 Black Toner" class="w-full h-24 object-contain mb-3" src="../Assets/toner.jpg"/>
+<h3 class="font-bold text-pe-dark mb-1">Canon 737 Black Toner</h3>
+<p class="text-gray-500 text-xs mb-2">imageCLASS MF211 / MF216n</p>
+<p class="text-pe-red font-bold">737</p>
+</div>
+<!-- Row 2 — hidden by default -->
+<div id="toner-row2" class="col-span-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+<!-- Product Card 5 -->
+<div class="bg-white border border-gray-100 rounded-lg p-4 shadow-card hover:shadow-lg transition-shadow">
+<img alt="Samsung MLT-D111S Toner" class="w-full h-24 object-contain mb-3" src="../Assets/toner.jpg"/>
+<h3 class="font-bold text-pe-dark mb-1">Samsung MLT-D111S Toner</h3>
+<p class="text-gray-500 text-xs mb-2">Xpress M2020 / M2020W</p>
+<p class="text-pe-red font-bold">MLT-D111S</p>
+</div>
+<!-- Product Card 6 -->
+<div class="bg-white border border-gray-100 rounded-lg p-4 shadow-card hover:shadow-lg transition-shadow">
+<img alt="HP 78A Black Toner" class="w-full h-24 object-contain mb-3" src="../Assets/toner.jpg"/>
+<h3 class="font-bold text-pe-dark mb-1">HP 78A Black Toner</h3>
+<p class="text-gray-500 text-xs mb-2">LaserJet Pro P1566 / P1606dn</p>
+<p class="text-pe-red font-bold">CE278A</p>
+</div>
+<!-- Product Card 7 -->
+<div class="bg-white border border-gray-100 rounded-lg p-4 shadow-card hover:shadow-lg transition-shadow">
+<img alt="Epson AL-M2400 Toner" class="w-full h-24 object-contain mb-3" src="../Assets/toner.jpg"/>
+<h3 class="font-bold text-pe-dark mb-1">Epson AL-M2400 Toner</h3>
+<p class="text-gray-500 text-xs mb-2">WorkForce AL-M200DN / M2400D</p>
+<p class="text-pe-red font-bold">C13S050583</p>
+</div>
+<!-- Product Card 8 -->
+<div class="bg-white border border-gray-100 rounded-lg p-4 shadow-card hover:shadow-lg transition-shadow">
+<img alt="Canon 725 Black Toner" class="w-full h-24 object-contain mb-3" src="../Assets/toner.jpg"/>
+<h3 class="font-bold text-pe-dark mb-1">Canon 725 Black Toner</h3>
+<p class="text-gray-500 text-xs mb-2">LBP6000 / LBP6030</p>
+<p class="text-pe-red font-bold">725</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: ProductGrid -->
+<!-- BEGIN: InkGrid -->
+<section class="py-8 bg-gray-50 border-t border-gray-200" id="inks">
+<div class="container mx-auto">
+<div class="flex justify-between items-end mb-8">
+<div>
+<p class="text-pe-red font-bold text-sm tracking-wide uppercase mb-1">Our Best Selling Inks</p>
+<h2 class="text-3xl font-extrabold text-pe-dark">Top Ink Cartridges. Vibrant Colours.</h2>
+</div>
+<a class="bg-pe-red text-white px-6 py-2 rounded font-semibold text-sm hover:bg-red-700 transition-colors" href="#inks">VIEW ALL INKS</a>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+<!-- Ink Card 1 -->
+<div class="bg-white border border-gray-100 rounded-lg p-4 shadow-card hover:shadow-lg transition-shadow">
+<img alt="HP 302 Black Ink Bottle" class="w-full h-24 object-contain mb-3" src="../Assets/ink bottle.jpg"/>
+<h3 class="font-bold text-pe-dark mb-1">HP 302 Black Ink</h3>
+<p class="text-gray-500 text-xs mb-2">DeskJet 1110 / 2130 / 3630</p>
+<p class="text-pe-red font-bold">F6U66AE</p>
+</div>
+<!-- Ink Card 2 -->
+<div class="bg-white border border-gray-100 rounded-lg p-4 shadow-card hover:shadow-lg transition-shadow">
+<img alt="Canon PG-545 Black Ink Bottle" class="w-full h-24 object-contain mb-3" src="../Assets/ink bottle.jpg"/>
+<h3 class="font-bold text-pe-dark mb-1">Canon PG-545 Black Ink</h3>
+<p class="text-gray-500 text-xs mb-2">PIXMA MG2450 / MG2550 / MX495</p>
+<p class="text-pe-red font-bold">PG-545</p>
+</div>
+<!-- Ink Card 3 -->
+<div class="bg-white border border-gray-100 rounded-lg p-4 shadow-card hover:shadow-lg transition-shadow">
+<img alt="Epson 502 Colour Ink Bottle" class="w-full h-24 object-contain mb-3" src="../Assets/ink bottle.jpg"/>
+<h3 class="font-bold text-pe-dark mb-1">Epson 502 Colour Ink</h3>
+<p class="text-gray-500 text-xs mb-2">XP-5100 / XP-5105 / WF-2860</p>
+<p class="text-pe-red font-bold">C13T02V64010</p>
+</div>
+<!-- Ink Card 4 -->
+<div class="bg-white border border-gray-100 rounded-lg p-4 shadow-card hover:shadow-lg transition-shadow">
+<img alt="Brother LC3211 Colour Ink Bottle" class="w-full h-24 object-contain mb-3" src="../Assets/ink bottle.jpg"/>
+<h3 class="font-bold text-pe-dark mb-1">Brother LC3211 Colour Ink</h3>
+<p class="text-gray-500 text-xs mb-2">DCP-J572DW / MFC-J491DW</p>
+<p class="text-pe-red font-bold">LC3211VAL</p>
+</div>
+</div>
+</div>
+</section>
+<!-- END: InkGrid -->
+<!-- BEGIN: PrinterRentals -->
+<section class="py-8 bg-white border-t border-gray-200" id="rentals">
+<div class="container mx-auto">
+<div class="flex justify-between items-end mb-8">
+<div>
+<p class="text-pe-red font-bold text-sm tracking-wide uppercase mb-1">Flexible Rental Plans</p>
+<h2 class="text-3xl font-extrabold text-pe-dark">Office Printer Rentals</h2>
+<p class="text-gray-500 text-sm mt-2">No large upfront cost. Just plug in and print. Contact us for a quote.</p>
+</div>
+<a class="bg-pe-red text-white px-6 py-2 rounded font-semibold text-sm hover:bg-red-700 transition-colors" href="#enquiry">GET A QUOTE</a>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+<!-- Rental Card 1 -->
+<div class="bg-white border border-gray-100 rounded-lg p-4 shadow-card hover:shadow-lg transition-shadow">
+<img alt="Ricoh SP 301" class="w-full h-24 object-contain mb-3" src="../Assets/ricoh-sp301.png"/>
+<h3 class="font-bold text-pe-dark mb-1">Ricoh SP 301</h3>
+<p class="text-gray-500 text-xs mb-1">Mono Laser Printer</p>
+<p class="text-gray-500 text-xs mb-2">Up to 28 ppm · USB &amp; Network</p>
+<p class="text-pe-red font-bold text-sm">From R299 / month</p>
+</div>
+<!-- Rental Card 2 -->
+<div class="bg-white border border-gray-100 rounded-lg p-4 shadow-card hover:shadow-lg transition-shadow">
+<img alt="Ricoh MPC 2011" class="w-full h-24 object-contain mb-3" src="../Assets/ricoh-mpc2011.png"/>
+<h3 class="font-bold text-pe-dark mb-1">Ricoh MPC 2011</h3>
+<p class="text-gray-500 text-xs mb-1">Colour Multifunction Printer</p>
+<p class="text-gray-500 text-xs mb-2">Up to 20 ppm · Print, Copy, Scan</p>
+<p class="text-pe-red font-bold text-sm">From R599 / month</p>
+</div>
+<!-- Rental Card 3 -->
+<div class="bg-white border border-gray-100 rounded-lg p-4 shadow-card hover:shadow-lg transition-shadow">
+<img alt="Ricoh MPC 2003" class="w-full h-24 object-contain mb-3" src="../Assets/ricoh-mpc2003.jpg"/>
+<h3 class="font-bold text-pe-dark mb-1">Ricoh MPC 2003</h3>
+<p class="text-gray-500 text-xs mb-1">Colour Multifunction Printer</p>
+<p class="text-gray-500 text-xs mb-2">Up to 20 ppm · Print, Copy, Scan, Fax</p>
+<p class="text-pe-red font-bold text-sm">From R549 / month</p>
+</div>
+</div>
+</div>
+</section>
+<!-- END: PrinterRentals -->
+<!-- BEGIN: WhyChooseSection -->
+<section class="py-8 bg-gray-50 border-t border-gray-200" id="about">
+<div class="container mx-auto text-center">
+<p class="text-pe-red font-bold text-sm tracking-wide uppercase mb-2">Why Choose Print Express?</p>
+<h2 class="text-3xl font-extrabold text-pe-dark mb-12">Quality Products. Local Service. Every Time.</h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 text-left">
+<div class="flex items-start space-x-4">
+<svg class="w-10 h-10 text-pe-red flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<div>
+<h3 class="font-bold text-pe-dark mb-2">PREMIUM QUALITY</h3>
+<p class="text-gray-600 text-sm">We stock only high quality ink &amp; toner cartridges for reliable performance and outstanding print results.</p>
+</div>
+</div>
+<div class="flex items-start space-x-4">
+<svg class="w-10 h-10 text-pe-red flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<div>
+<h3 class="font-bold text-pe-dark mb-2">GREAT VALUE</h3>
+<p class="text-gray-600 text-sm">Get the best value for your money with competitive prices on all leading brands.</p>
+</div>
+</div>
+<div class="flex items-start space-x-4">
+<svg class="w-10 h-10 text-pe-red flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<div>
+<h3 class="font-bold text-pe-dark mb-2">FAST LOCAL DELIVERY</h3>
+<p class="text-gray-600 text-sm">Quick and reliable delivery across Bristol and surrounding areas. Often same day service!</p>
+</div>
+</div>
+<div class="flex items-start space-x-4">
+<svg class="w-10 h-10 text-pe-red flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<div>
+<h3 class="font-bold text-pe-dark mb-2">LOCAL &amp; TRUSTED</h3>
+<p class="text-gray-600 text-sm">We're a local business that cares about our customers and our community.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: WhyChooseSection -->
+<!-- BEGIN: CTABanner -->
+<section class="bg-pe-red text-white py-5">
+<div class="container mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+<div class="flex items-center space-x-4">
+<div class="bg-white text-pe-red rounded-full p-3 flex-shrink-0">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div>
+<h3 class="font-bold text-lg md:text-xl">Need help finding the right cartridge?</h3>
+<p class="text-red-100 text-sm">Our experts are here to help!</p>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row items-center gap-4">
+<div class="flex items-center space-x-3">
+<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<div>
+<a class="font-bold text-xl hover:underline" href="tel:0608481691">0608481691</a>
+<p class="text-red-100 text-sm">Call us today</p>
+</div>
+</div>
+<a class="bg-pe-dark text-white px-6 py-3 rounded font-bold hover:bg-black transition-colors flex items-center space-x-2" href="tel:0608481691">
+<span>CALL US NOW</span>
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</a>
+</div>
+</div>
+</section>
+<!-- END: CTABanner -->
+<!-- BEGIN: EnquiryForm -->
+<section class="py-8 bg-white border-t border-gray-200" id="enquiry">
+<div class="container mx-auto">
+<div class="max-w-2xl mx-auto">
+<p class="text-pe-red font-bold text-sm tracking-wide uppercase mb-2 text-center">Get In Touch</p>
+<h2 class="text-3xl font-extrabold text-pe-dark mb-2 text-center">Send Us an Enquiry</h2>
+<p class="text-gray-500 text-center mb-10">Not sure what you need? Fill in the form below and we'll get back to you quickly.</p>
+<form id="enquiry-form" class="space-y-5" onsubmit="handleEnquiryForm(event)">
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+<div>
+<label class="block text-sm font-semibold text-pe-dark mb-1" for="enq-name">Full Name</label>
+<input class="w-full border border-gray-300 rounded px-4 py-3 text-sm focus:outline-none focus:border-pe-red" id="enq-name" name="name" placeholder="Your name" required type="text"/>
+</div>
+<div>
+<label class="block text-sm font-semibold text-pe-dark mb-1" for="enq-phone">Phone Number</label>
+<input class="w-full border border-gray-300 rounded px-4 py-3 text-sm focus:outline-none focus:border-pe-red" id="enq-phone" name="phone" placeholder="e.g. 0608481691" type="tel"/>
+</div>
+</div>
+<div>
+<label class="block text-sm font-semibold text-pe-dark mb-1" for="enq-email">Email Address</label>
+<input class="w-full border border-gray-300 rounded px-4 py-3 text-sm focus:outline-none focus:border-pe-red" id="enq-email" name="email" placeholder="you@example.com" required type="email"/>
+</div>
+<div>
+<label class="block text-sm font-semibold text-pe-dark mb-1" for="enq-printer">Printer Model (optional)</label>
+<input class="w-full border border-gray-300 rounded px-4 py-3 text-sm focus:outline-none focus:border-pe-red" id="enq-printer" name="printer" placeholder="e.g. HP DeskJet 2630" type="text"/>
+</div>
+<div>
+<label class="block text-sm font-semibold text-pe-dark mb-1" for="enq-message">Your Enquiry</label>
+<textarea class="w-full border border-gray-300 rounded px-4 py-3 text-sm focus:outline-none focus:border-pe-red" id="enq-message" name="message" placeholder="Tell us what ink or toner you're looking for..." required rows="5"></textarea>
+</div>
+<div>
+<button class="w-full bg-pe-red text-white py-3 rounded font-bold hover:bg-red-700 transition-colors text-sm uppercase tracking-wide" id="enq-btn" type="submit">Send Enquiry</button>
+</div>
+<p class="hidden text-sm text-red-600 text-center" id="enq-error">Something went wrong. Please try again.</p>
+</form>
+<!-- Success message -->
+<div class="hidden text-center py-10" id="enq-success">
+<div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
+<svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>
+</div>
+<h3 class="text-xl font-bold text-pe-dark mb-2">Enquiry Sent!</h3>
+<p class="text-gray-500 text-sm">Thanks! We'll get back to you as soon as possible.</p>
+</div>
+<script>
+async function handleEnquiryForm(e) {
+  e.preventDefault();
+  const btn = document.getElementById('enq-btn');
+  const errorEl = document.getElementById('enq-error');
+  errorEl.classList.add('hidden');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  const payload = {
+    name: document.getElementById('enq-name').value,
+    phone: document.getElementById('enq-phone').value,
+    email: document.getElementById('enq-email').value,
+    printer: document.getElementById('enq-printer').value,
+    message: document.getElementById('enq-message').value,
+  };
+
+  try {
+    const res = await fetch('/enquiry', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error('Failed');
+    document.getElementById('enquiry-form').classList.add('hidden');
+    document.getElementById('enq-success').classList.remove('hidden');
+  } catch {
+    btn.disabled = false;
+    btn.textContent = 'Send Enquiry';
+    errorEl.classList.remove('hidden');
+  }
+}
+</script>
+</div>
+</div>
+</section>
+<!-- END: EnquiryForm -->
+<!-- BEGIN: Footer -->
+<footer class="bg-pe-dark text-gray-300 py-8" id="contact">
+<div class="container mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
+<div>
+<a class="flex items-center mb-6" href="#home">
+<div style="width:40px; height:40px; overflow:hidden; flex-shrink:0;">
+<img alt="Print Express Logo" src="../Assets/logo.svg" style="height:40px; width:auto; max-width:none;"/>
+</div>
+</a>
+<p class="text-sm mb-6">Your local ink &amp; toner cartridge specialists. Quality products, great prices and friendly service.</p>
+<div class="flex space-x-4">
+<!-- Social Icons Placeholder -->
+<a class="bg-gray-700 p-2 rounded-full hover:bg-pe-red transition-colors" href="#"><svg class="w-4 h-4 text-white" fill="currentColor" viewbox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"></path></svg></a>
+<a class="bg-gray-700 p-2 rounded-full hover:bg-pe-red transition-colors" href="#"><svg class="w-4 h-4 text-white" fill="currentColor" viewbox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path></svg></a>
+</div>
+</div>
+<div>
+<h4 class="text-white font-bold mb-6 uppercase">Quick Links</h4>
+<ul class="space-y-3 text-sm">
+<li><a class="hover:text-pe-red transition-colors" href="#inks">Ink Cartridges</a></li>
+<li><a class="hover:text-pe-red transition-colors" href="#toners">Toner Cartridges</a></li>
+<li><a class="hover:text-pe-red transition-colors" href="#rentals">Rent a Printer</a></li>
+<li><a class="hover:text-pe-red transition-colors" href="#toners">Special Offers</a></li>
+<li><a class="hover:text-pe-red transition-colors" href="#about">About Us</a></li>
+<li><a class="hover:text-pe-red transition-colors" href="#enquiry">Contact</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-white font-bold mb-6 uppercase">Customer Service</h4>
+<ul class="space-y-3 text-sm">
+<li><a class="hover:text-pe-red transition-colors" href="#enquiry">Delivery Information</a></li>
+<li><a class="hover:text-pe-red transition-colors" href="#enquiry">Returns &amp; Refunds</a></li>
+<li><a class="hover:text-pe-red transition-colors" href="#enquiry">FAQs</a></li>
+<li><a class="hover:text-pe-red transition-colors" href="#inks">Compatibility Guide</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-white font-bold mb-6 uppercase">Contact Us</h4>
+<ul class="space-y-4 text-sm">
+<li class="flex items-center space-x-3">
+<svg class="w-5 h-5 text-pe-red" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<a class="hover:text-pe-red transition-colors" href="tel:0608481691">0608481691</a>
+</li>
+<li class="flex items-center space-x-3">
+<svg class="w-5 h-5 text-pe-red" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<a class="hover:text-pe-red transition-colors" href="mailto:hello@printexpress.co.uk">hello@printexpress.co.uk</a>
+</li>
+<li class="flex items-start space-x-3">
+<svg class="w-5 h-5 text-pe-red flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>6 Cilliers Street,<br/>Kimberley, Northern Cape</span>
+</li>
+<li class="flex items-center space-x-3">
+<svg class="w-5 h-5 text-pe-red" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Mon - Sat: 9:00 AM - 6:00 PM</span>
+</li>
+</ul>
+</div>
+</div>
+<div class="container mx-auto mt-12 pt-8 border-t border-gray-700 text-center text-sm text-gray-500">
+      © 2024 Print Express. All rights reserved.
+    </div>
+</footer>
+<!-- END: Footer -->
+</body></html>

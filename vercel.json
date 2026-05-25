@@ -1,0 +1,31 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "website/**",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "api/**/*.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/generate-image",
+      "dest": "/api/generate-image.js"
+    },
+    {
+      "src": "/lead",
+      "dest": "/api/lead.js"
+    },
+    {
+      "src": "/",
+      "dest": "/website/design1.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/website/$1"
+    }
+  ]
+}
